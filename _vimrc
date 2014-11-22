@@ -98,7 +98,8 @@ set background=dark
 "colorscheme grb256
 "colorscheme codeschool
 "colorscheme vividchalk
-colorscheme solarized
+"colorscheme solarized
+colorscheme torte
 
 " Indentations
 set smartindent
