@@ -8,19 +8,27 @@
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
+# don't put duplicate lines in the history. See bash(1) for more options
+# don't overwrite GNU Midnight Commander's setting of `ignorespace'.
+HISTCONTROL=$HISTCONTROL${HISTCONTROL+,}ignoredups
+# ... or force ignoredups and ignorespace
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# Set prompt in this format:
+# time dir(basename) $
+# The prompt is bold and green
+# Use prompt generator: http://bashrcgenerator.com/
+PS1="\[\e[01;32m\]\A\[\e[0m\]\[\e[00;37m\] \[\e[0m\]\[\e[01;32m\]\W\[\e[0m\]\[\e[00;37m\] \[\e[0m\]\[\e[01;32m\]\\$\[\e[0m\]\[\e[00;37m\] \[\e[0m\]"
+
+# Enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
+    . /etc/bash_completion
 fi
-
-# set a fancy prompt (non-color, overwrite the one in /etc/profile)
-#PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-PS1="\[\e[32;1m\]\h\[\e[30;1m\]:\[\e[34;1m\]\w\[\e[30;1m\]$\[\e[0m\]\[\e]2;\w\a\] "
-
-# enable bash completion in interactive shells
-#if [ -f /etc/bash_completion ]; then
-#    . /etc/bash_completion
-#fi
 
 # Eclipse settings
 export ECLIPSE_MEM_START=1024m
@@ -28,10 +36,17 @@ export ECLIPSE_MEM_MAX=2048m
 export ECLIPSE_PERM_SIZE=128m
 export ECLIPSE_MAX_PERM_SIZE=256m
 
+alias vi=vim
 alias sb="source $HOME/.bashrc"
-alias vb="vi $HOME/.bashrc"
 alias ll="ls -l"
 alias lh="ls -lh"
 alias lc="ls --color"
+alias mroe=more
 
-source my.bashrc
+# Alias definitions. Put all your additions into a separate file
+# ~/.bash_aliases.
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+    echo "Loaded $HOME/.bash_aliases"
+fi
+
