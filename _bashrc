@@ -36,6 +36,10 @@ export ECLIPSE_MEM_MAX=2048m
 export ECLIPSE_PERM_SIZE=128m
 export ECLIPSE_MAX_PERM_SIZE=256m
 
+# For autojump
+[[ -s $HOME/.autojump/etc/profile.d/autojump.sh ]] &&
+source $HOME/.autojump/etc/profile.d/autojump.bash
+
 alias vi=vim
 alias sb="source $HOME/.bashrc"
 alias ll="ls -l"
