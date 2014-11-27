@@ -58,28 +58,6 @@ filetype plugin indent on    " file type detection, load custom filetype plugin 
 " Put your non-Plugin stuff after this line
 
 " ==========================================================
-" Plugin: UltiSnips
-" ==========================================================
-
-" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-let g:UltiSnipsSnippetsDir="~/.vim/bundle/vim-snippets/UltiSnips"
-let g:UltiSnipsExpandTrigger="<tab>"
-" let g:UltiSnipsJumpForwardTrigger="<c-b>"
-" let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-
-" If you want :UltiSnipsEdit to split your window.
-let g:UltiSnipsEditSplit="vertical"
-
-" ==========================================================
-" Plugin: command-t
-" ==========================================================
-
-" file search
-map <leader>f :CommandT<CR>
-" Ack searching
-nmap <leader>a <Esc>:Ack!
-
-" ==========================================================
 " Others
 " ==========================================================
 
@@ -189,4 +167,26 @@ au FileType python setlocal expandtab shiftwidth=2 tabstop=4 softtabstop=2 cinde
 au BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 " Don't let pyflakes use the quickfix window
 let g:pyflakes_use_quickfix = 0
+
+" ==========================================================
+" Plugin: UltiSnips
+" ==========================================================
+
+" Trigger configuration
+let g:UltiSnipsSnippetsDir="~/.vim/bundle/vim-snippets/UltiSnips"
+let g:UltiSnipsExpandTrigger="<tab>"
+" let g:UltiSnipsJumpForwardTrigger="<c-b>"
+" let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+
+" ==========================================================
+" Plugin: command-t
+" ==========================================================
+
+" file search
+map <leader>f :CommandT<CR>
+" Ack searching
+nmap <leader>a <Esc>:Ack!
 
