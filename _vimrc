@@ -125,9 +125,7 @@ set shiftround              " Rounds indent to a multiple of shiftwidth
 set wildmenu                  " Auto-completion for file names. E.g., :e <Tab>
 set wildmode=full             " <Tab> cycles between all matching choices.
 " Ignore these files when completing
-set wildignore+=*.o,*.obj,.git,*.pyc,*.class,.git,
-set wildignore+=eggs/**
-set wildignore+=*.egg-info/**
+set wildignore+=*.o,*.obj,.git,*.pyc,*.class,.git
 
 """" Others
 " Honor aliases from .bashrc
