@@ -188,3 +188,12 @@ map <leader>f :CommandT<CR>
 " Ack searching
 nmap <leader>a <Esc>:Ack!
 
+
+" ==========================================================
+" Extra (machine specific) settings
+" ==========================================================
+
+if filereadable(glob("~/.vimrc.local")) 
+  source ~/.vimrc.local
+endif
+

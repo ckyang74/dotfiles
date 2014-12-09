@@ -10,6 +10,8 @@ _conf_dir = "~/.config"
 _conf_file = "dev_config.yaml"
 _backup_extension = "bak"
 
+_home_dir = os.path.expanduser("~")
+
 _head_comment = """## Dev environment configuration.
 #
 # Example:
@@ -29,10 +31,9 @@ _head_comment = """## Dev environment configuration.
 """
 
 def _install_dotfiles(dotfiles):
-  home_dir = os.path.expanduser("~")
   for entry in dotfiles:
     src_path = "%s/%s" %(os.getcwd(), entry["source_file"])
-    dest_path = "%s/%s" %(home_dir, entry["destination_file"])
+    dest_path = "%s/%s" %(_home_dir, entry["destination_file"])
     _remove_soft_link(dest_path)
     _move_orig_as_bak(dest_path)
     _handle_file(src_path, dest_path, entry["action_type"])
@@ -45,11 +46,17 @@ def _validate_conf(data):
   assert isinstance(data, dict)
   assert "dotfiles" in data
   assert "others" in data
+  assert "suggestions" in data
 
   existing_dotfiles = set()
   for file in os.listdir("."):
     if file.startswith("_"):
       existing_dotfiles.add(file)
+
+  for entry in data["suggestions"]:
+    assert isinstance(entry, dict)
+    assert "destination_file" in entry
+    assert "description" in entry
 
   others = [] if data["others"] is None else data["others"]
   for entry in others + data["dotfiles"]:
@@ -58,6 +65,14 @@ def _validate_conf(data):
     assert "destination_file" in entry
     assert "action_type" in entry
     assert entry["action_type"] in ["link", "copy"]
+
+    dest_path = "%s/%s" %(_home_dir, entry["destination_file"])
+    parent_path = os.path.split(dest_path)[0]
+    if not os.path.exists(parent_path):
+      sys.stderr.write("Parent dir for destination file does not exist.\n"
+          "\tdestination file: %s\n"
+          "\tfull path: %s\n" %(entry["destination_file"], dest_path))
+      exit(1)
 
   defined_dotfiles = set()
   for entry in data["dotfiles"]:
@@ -92,7 +107,7 @@ def _copy_to_destination(src_path, dest_path):
 
 def _link_to_destination(src_path, dest_path):
   os.symlink(src_path, dest_path)
-  sys.stderr.write("Created a soft link: %s to %s\n" %(src_path, dest_path))
+  sys.stderr.write("Created a symlink: %s to %s\n" %(src_path, dest_path))
 
 def _create_missing_conf_file():
   conf_dirpath = os.path.expanduser(_conf_dir)
@@ -107,7 +122,7 @@ def _create_missing_conf_file():
     _move_orig_as_bak(dest_path)
     _handle_file(src_path, dest_path, "copy")
   else:
-    sys.stderr.write("Use existing %s\n" %_conf_file)
+    sys.stderr.write("Use existing config: %s\n" %dest_path)
 
   return dest_path
 
@@ -128,6 +143,12 @@ def _handle_file(src_path, dest_path, action_type):
   elif action_type == "copy":
     _copy_to_destination(src_path, dest_path)
 
+def _show_next_steps(suggestions):
+  sys.stderr.write("\n\nNext steps:\n")
+  for entry in suggestions:
+    dest_path = "%s/%s" %(_home_dir, entry["destination_file"])
+    sys.stderr.write("%s\n--%s\n\n" %(dest_path, entry["description"]))
+
 if __name__ == "__main__":
   conf_filepath = _create_missing_conf_file()
 
@@ -138,17 +159,18 @@ if __name__ == "__main__":
   _install_dotfiles(data["dotfiles"])
 
   if not data["others"]:
-    sys.stderr.write("No extra config defined. Installation done!\n")
+    sys.stderr.write("\n\nNo extra config defined. Installation done!\n")
+    _show_next_steps(data["suggestions"])
     exit(0)
 
-  home_dir = os.path.expanduser("~")
   for entry in data["others"]:
-    src_path = "%s/%s" %(home_dir, entry["source_file"])
-    dest_path = "%s/%s" %(home_dir, entry["destination_file"])
+    src_path = "%s/%s" %(_home_dir, entry["source_file"])
+    dest_path = "%s/%s" %(_home_dir, entry["destination_file"])
 
     _remove_soft_link(dest_path)
     _move_orig_as_bak(dest_path)
 
     _handle_file(src_path, dest_path, entry["action_type"])
 
-  sys.stderr.write("Installation done!\n")
+  sys.stderr.write("\n\nInstallation done!\n")
+  _show_next_steps(data["suggestions"])

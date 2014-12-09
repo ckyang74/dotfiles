@@ -11,9 +11,19 @@ dotfiles:
   destination_file: ".bashrc"
   action_type: copy
 
+# destination_files are based on home dir.
+suggestions:
+- destination_file: .config/dev_config.yaml
+  description: Update your dev environment here
+- destination_file: .vimrc.local
+  description: Put your machine specific vim settings here
+- destination_file: .bash_aliases
+  description: Put your machine specific bash settings here
+
 # Both source_file and destination_file are based on home dir.
 others:
 #- source_file: relative/path/to/source/config
 #  destination_file: relative/path/to/destination/config
 #  action_type: link
+
 
