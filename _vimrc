@@ -156,7 +156,7 @@ autocmd FileType html,xhtml,xml,css setlocal expandtab shiftwidth=2 tabstop=2 so
 au BufNewFile,BufRead *.md setf markdown
 
 " Remove trailing spaces for specified file types
-autocmd FileType md,yaml,yml,txt autocmd BufWritePre <buffer> :%s/\s\+$//e
+autocmd FileType python,markdown,text,yaml, autocmd BufWritePre <buffer> :%s/\s\+$//e
 
 " Python
 "au BufRead *.py compiler nose

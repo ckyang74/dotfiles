@@ -1,0 +1,19 @@
+## Basic config for this machine.
+
+# source_file is based on cwd
+# destination_file is based on home dir.
+dotfiles:
+- source_file: _vimrc
+  destination_file: ".vimrc"
+  action_type: copy
+
+- source_file: _bashrc
+  destination_file: ".bashrc"
+  action_type: copy
+
+# Both source_file and destination_file are based on home dir.
+others:
+#- source_file: relative/path/to/source/config
+#  destination_file: relative/path/to/destination/config
+#  action_type: link
+
