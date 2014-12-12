@@ -38,6 +38,21 @@ def _install_dotfiles(dotfiles):
     _move_orig_as_bak(dest_path)
     _handle_file(src_path, dest_path, entry["action_type"])
 
+def _install_others(data):
+  if not data["others"]:
+    sys.stderr.write("\n\nNo extra config defined. Installation done!\n")
+    _show_next_steps(data["suggestions"])
+    exit(0)
+
+  for entry in data["others"]:
+    src_path = "%s/%s" %(_home_dir, entry["source_file"])
+    dest_path = "%s/%s" %(_home_dir, entry["destination_file"])
+
+    _remove_soft_link(dest_path)
+    _move_orig_as_bak(dest_path)
+
+    _handle_file(src_path, dest_path, entry["action_type"])
+
 def _validate_conf(data):
   if not data:
     sys.stderr.write("Config file is empty. conf file: %s\n" %conf_filepath)
@@ -59,6 +74,12 @@ def _validate_conf(data):
     assert "description" in entry
 
   others = [] if data["others"] is None else data["others"]
+  for entry in others:
+    src_path = "%s/%s" %(_home_dir, entry["source_file"])
+    if not os.path.exists(src_path):
+      sys.stderr.write("Source file does not exist: %s.\n" %src_path)
+      exit(1)
+
   for entry in others + data["dotfiles"]:
     assert isinstance(entry, dict)
     assert "source_file" in entry
@@ -158,19 +179,7 @@ if __name__ == "__main__":
 
   _install_dotfiles(data["dotfiles"])
 
-  if not data["others"]:
-    sys.stderr.write("\n\nNo extra config defined. Installation done!\n")
-    _show_next_steps(data["suggestions"])
-    exit(0)
-
-  for entry in data["others"]:
-    src_path = "%s/%s" %(_home_dir, entry["source_file"])
-    dest_path = "%s/%s" %(_home_dir, entry["destination_file"])
-
-    _remove_soft_link(dest_path)
-    _move_orig_as_bak(dest_path)
-
-    _handle_file(src_path, dest_path, entry["action_type"])
+  _install_others(data)
 
   sys.stderr.write("\n\nInstallation done!\n")
   _show_next_steps(data["suggestions"])
