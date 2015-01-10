@@ -17,11 +17,45 @@ HISTCONTROL=ignoreboth
 # append to the history file, don't overwrite it
 shopt -s histappend
 
-# Set prompt in this format:
-# time dir(basename) $
-# The prompt is bold and green
+
+# Sets command line prompt. The prompt is bold and green.
 # Use prompt generator: http://bashrcgenerator.com/
-PS1="\[\e[01;32m\]\A\[\e[0m\]\[\e[00;37m\] \[\e[0m\]\[\e[01;32m\]\W\[\e[0m\]\[\e[00;37m\] \[\e[0m\]\[\e[01;32m\]\\$\[\e[0m\]\[\e[00;37m\] \[\e[0m\]"
+function prompt_command {
+  # Shorten pwd if necessary
+  local pwd_length=17
+  if [ $(echo -n $PWD | wc -c | tr -d " ") -gt $pwd_length ]
+  then
+    shortPWD="$(echo -n $PWD | sed -e "s/.*\(.\{$pwd_length\}\)/...\1/")"
+  else
+    shortPWD="$(echo -n $PWD)"
+  fi
+
+  ##### Inside a regular Bash session
+  # Set prompt in this format:
+  # time shortened-PWD $
+  if [ -z "$STY" ]; then
+    PS1="\[\e[01;32m\]\A\[\e[0m\]\[\e[00;37m\] \[\e[0m\]\[\e[01;32m\]$shortPWD\[\e[0m\]\[\e[00;37m\] \[\e[0m\]\[\e[01;32m\]\\$\[\e[0m\]\[\e[00;37m\] \[\e[0m\]"
+
+    return
+  fi
+
+  ##### Inside a GNU Screen session
+  # Set prompt in this format:
+  # (Shortened-PTY) shortened-PWD $
+
+  # Shorten GNU Screen name (STY) if necessary
+  local sty_length=5
+  if [ $(echo -n $STY | wc -c | tr -d " ") -gt $sty_length ]
+  then
+    shortSTY="$(echo -n $STY | sed -e "s/\(.\{$sty_length\}\).*/\1/")"
+  else
+    shortSTY="$(echo -n $STY)"
+  fi
+
+  PS1="\[\e[01;32m\]($shortSTY)\[\e[0m\]\[\e[00;37m\]\[\e[0m\]\[\e[01;32m\] $shortPWD\[\e[0m\]\[\e[00;37m\] \[\e[0m\]\[\e[01;32m\]\\$\[\e[0m\]\[\e[00;37m\] \[\e[0m\]"
+}
+PROMPT_COMMAND=prompt_command
+export PROMPT_COMMAND
 
 # Enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
