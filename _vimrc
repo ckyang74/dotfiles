@@ -26,6 +26,8 @@ Plugin 'git://git.wincent.com/command-t.git'
 
 Plugin 'scrooloose/nerdtree.git'
 
+Plugin 'scrooloose/syntastic.git'
+
 " The sparkup vim script is in a subdirectory of this repo called vim.
 " Pass the path to set the runtimepath properly.
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
@@ -57,6 +59,7 @@ filetype plugin indent on    " file type detection, load custom filetype plugin 
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
+
 " ==========================================================
 " Others
 " ==========================================================
@@ -78,11 +81,12 @@ set sm                        " Show matching ()'s []'s {}'s
 set hlsearch                  " Highlight search results
 set pastetoggle=<C-a>         " use quick key to toggle paste/nopaste
 set cursorline                " have a line indicate the cursor location
-set textwidth=100             " line width at 100 chars.
 set nowrap                    " don't wrap text
 set linebreak                 " don't wrap textin the middle of a word
-set colorcolumn=79
+set textwidth=80              " line width at 80 chars.
+set colorcolumn=+1
 set ffs=unix,dos,mac          " Try recognizing dos, unix, and mac line endings.
+
 
 """" Messages, Info, Status
 set ruler                     " show the cursor position all the time
@@ -92,6 +96,7 @@ set report=0                  " : commands always print changed line count.
 set shortmess+=a              " Use [+]/[RO]/[w] for modified/readonly/written.
 set laststatus=2              " Always show statusline, even if only 1 window.
 set statusline=[%l,%v\ %P%M]\ %f\ %r%h%w\ (%{&ff})\ %{fugitive#statusline()}
+
 
 """" Colors
 """" See colorscheme files under ~/.vim/colors/
@@ -109,9 +114,11 @@ colorscheme torte
 " http://unix.stackexchange.com/questions/88879/vim-better-colors-so-comments-arent-dark-blue
 color desert
 
+
 """" Sound
 set noerrorbells
 set vb t_vb=                " Disable all bells.  I hate ringing/flashing.
+
 
 """" Indentations
 set autoindent              " always set autoindenting on
@@ -121,11 +128,13 @@ set softtabstop=2           " <BS> over an autoindent deletes both spaces.
 set expandtab               " Use spaces, not tabs, for autoindent/tab key.
 set shiftround              " Rounds indent to a multiple of shiftwidth
 
+
 """" Ignore files with specified pattern.
 set wildmenu                  " Auto-completion for file names. E.g., :e <Tab>
 set wildmode=full             " <Tab> cycles between all matching choices.
 " Ignore these files when completing
 set wildignore+=*.o,*.obj,.git,*.pyc,*.class,.git
+
 
 """" Others
 " Honor aliases from .bashrc
@@ -143,6 +152,7 @@ map <leader>p "+p
 " Quit window on <leader>q
 nnoremap <leader>q :q<CR>
 
+
 " ==========================================================
 " FileType specific changes
 " ==========================================================
@@ -150,21 +160,24 @@ nnoremap <leader>q :q<CR>
 " jinja2 as HTML
 autocmd BufNewFile,BufRead *.jinja2 setlocal ft=html
 
-autocmd FileType html,xhtml,xml,css setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+autocmd BufNewFile,BufRead *.js setlocal ft=javascript
+
+autocmd FileType html,xhtml,xml,css,javascript setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 
 " Recognize .md as markdown file
 au BufNewFile,BufRead *.md setf markdown
 
 " Remove trailing spaces for specified file types
-autocmd FileType python,markdown,text,yaml, autocmd BufWritePre <buffer> :%s/\s\+$//e
+autocmd FileType python,markdown,text,yaml,javascript autocmd BufWritePre <buffer> :%s/\s\+$//e
 
 " Python
 "au BufRead *.py compiler nose
 au FileType python set omnifunc=pythoncomplete#Complete
-au FileType python setlocal expandtab shiftwidth=2 tabstop=4 softtabstop=2 cindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
+au FileType python setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2 cindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
 au BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 " Don't let pyflakes use the quickfix window
 let g:pyflakes_use_quickfix = 0
+
 
 " ==========================================================
 " Plugin: UltiSnips
@@ -179,6 +192,7 @@ let g:UltiSnipsExpandTrigger="<tab>"
 " If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 
+
 " ==========================================================
 " Plugin: command-t
 " ==========================================================
@@ -187,6 +201,25 @@ let g:UltiSnipsEditSplit="vertical"
 map <leader>f :CommandT<CR>
 " Ack searching
 nmap <leader>a <Esc>:Ack!
+
+
+" ==========================================================
+" Plugin: Syntastic
+" ==========================================================
+
+" Use flake8 syntax checker (instead of default - pylint)
+let g:syntastic_python_checkers = ['flake8']
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+" Don't check for line length and 2-indentation
+let g:syntastic_python_flake8_args='--ignore=E501,E111,E114'
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 
 
 " ==========================================================
