@@ -1,42 +1,49 @@
 " ==========================================================
-" Vundle (install it first from github)
+" Vundle (plugin installer)
 " ==========================================================
 
 set nocompatible              " required VIM default setting
 filetype off                  " required
 
-" set the runtime path to include Vundle and initialize
+" Set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
+
+" Keep Plugin commands between vundle#begin/end
 call vundle#begin()
 
-" First of all, we must manage the vundle package itself with vundle
+" This has to go first
 Plugin 'gmarik/Vundle.vim'
 
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
-
-" plugin on GitHub repo
+" For Git support
+" Eg, :Gstatus for git status
 Plugin 'tpope/vim-fugitive'
 
-" plugin from http://vim-scripts.org/vim/scripts.html
-Plugin 'L9'
-
-" Git plugin not hosted on GitHub
+" For auto completion
 Plugin 'git://git.wincent.com/command-t.git'
 
+" For directory tree UI. Usage:
+" :NERDTree
 Plugin 'scrooloose/nerdtree.git'
 
+" Syntax checker (for Python now, can support other languages)
 Plugin 'scrooloose/syntastic.git'
 
-" The sparkup vim script is in a subdirectory of this repo called vim.
+" 2016/10/21 - commented out since it interfers with ^n
+"
+" HTML code snippet
+" Eg, type div, then ^e, it expands to <div></div>
+" The sparkup vim script is in a subdirectory:
+"
+"     ~/.vim/bundle/sparkup/vim/.
+"
 " Pass the path to set the runtimepath properly.
-Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 
 " To provide code snippet templates
 Plugin 'SirVer/ultisnips'
 
 " Snippets are separated from the engine. Add this if you want them:
-Plugin 'honza/vim-snippets'
+" Plugin 'honza/vim-snippets'
 
 " Solarized colorscheme
 " http://ethanschoonover.com/solarized
@@ -46,8 +53,7 @@ Plugin 'Solarized'
 call vundle#end()            " required
 
 " Now we can turn our filetype functionality back on
-filetype plugin indent on    " file type detection, load custom filetype plugin files
-                             " and indentation based on filetype
+filetype plugin indent on
 
 "
 " Brief help
@@ -64,33 +70,34 @@ filetype plugin indent on    " file type detection, load custom filetype plugin 
 " Others
 " ==========================================================
 
-set nocompatible              " required VIM default setting
+set nocompatible              " Required VIM default setting
 let mapleader = ","           " Set comma as <leader>
 set nostartofline             " Avoid moving cursor to BOL when jumping around
 set scrolloff=3               " Keep 3 context lines above and below the cursor
-filetype plugin indent on     " file type detection, load custom filetype plugin files
+filetype plugin indent on     " File type detection, load custom filetype plugin files
                               " and indentation based on filetype
 set noautowrite               " Never write a file unless I request it.
 set noautowriteall            " NEVER.
 
 set number                    " Display line numbers
-set numberwidth=1             " using only 1 column (and 1 space) while possible
-set title                     " show title in console title bar
+set numberwidth=1             " Use only 1 column (and 1 space) while possible
+set title                     " Show title in console title bar
 set noic                      " Case sensitive search
 set sm                        " Show matching ()'s []'s {}'s
 set hlsearch                  " Highlight search results
-set pastetoggle=<C-a>         " use quick key to toggle paste/nopaste
-set cursorline                " have a line indicate the cursor location
-set nowrap                    " don't wrap text
-set linebreak                 " don't wrap textin the middle of a word
-set textwidth=80              " line width at 80 chars.
+set pastetoggle=<C-a>         " Use quick key to toggle paste/nopaste
+set cursorline                " Have a line indicate the cursor location
+set nowrap                    " Don't wrap text
+set linebreak                 " Don't wrap textin the middle of a word
+set textwidth=80              " Line width at 80 chars.
 set colorcolumn=+1
 set ffs=unix,dos,mac          " Try recognizing dos, unix, and mac line endings.
+syntax on                     " Syntax highlighting enabled
 
 
 """" Messages, Info, Status
-set ruler                     " show the cursor position all the time
-set ls=2                      " allways show status line
+set ruler                     " Show the cursor position all the time
+set ls=2                      " Allways show status line
 set showcmd                   " Show incomplete normal mode commands as I type.
 set report=0                  " : commands always print changed line count.
 set shortmess+=a              " Use [+]/[RO]/[w] for modified/readonly/written.
@@ -101,8 +108,6 @@ set statusline=[%l,%v\ %P%M]\ %f\ %r%h%w\ (%{&ff})\ %{fugitive#statusline()}
 """" Colors
 """" See colorscheme files under ~/.vim/colors/
 set t_Co=256                  " xterm 256 color
-syntax enable                 " syntax highlighting enabled, needed for the
-                              " colorschemes to work
 set background=dark
 "colorscheme distinguished
 "colorscheme grb256
@@ -121,9 +126,9 @@ set vb t_vb=                " Disable all bells.  I hate ringing/flashing.
 
 
 """" Indentations
-set autoindent              " always set autoindenting on
+set autoindent              " Always set autoindenting on
 set tabstop=2               " <tab> inserts 4 spaces 
-set shiftwidth=2            " but an indent level is 2 spaces wide.
+set shiftwidth=2            " But an indent level is 2 spaces wide.
 set softtabstop=2           " <BS> over an autoindent deletes both spaces.
 set expandtab               " Use spaces, not tabs, for autoindent/tab key.
 set shiftround              " Rounds indent to a multiple of shiftwidth
@@ -133,7 +138,7 @@ set shiftround              " Rounds indent to a multiple of shiftwidth
 set wildmenu                  " Auto-completion for file names. E.g., :e <Tab>
 set wildmode=full             " <Tab> cycles between all matching choices.
 " Ignore these files when completing
-set wildignore+=*.o,*.obj,.git,*.pyc,*.class,.git
+set wildignore+=*.o,*.obj,.git,*.pyc,*.class,.git,*.js.map
 
 
 """" Others
@@ -162,10 +167,13 @@ autocmd BufNewFile,BufRead *.jinja2 setlocal ft=html
 
 autocmd BufNewFile,BufRead *.js setlocal ft=javascript
 
-autocmd FileType html,xhtml,xml,css,javascript setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+autocmd FileType yaml,java,html,xhtml,xml,css,javascript,markdown setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 
 " Recognize .md as markdown file
 au BufNewFile,BufRead *.md setf markdown
+
+" Recognize .ts as javascript file
+au BufNewFile,BufRead *.ts setf javascript 
 
 " Remove trailing spaces for specified file types
 autocmd FileType python,markdown,text,yaml,javascript autocmd BufWritePre <buffer> :%s/\s\+$//e
@@ -207,7 +215,7 @@ nmap <leader>a <Esc>:Ack!
 " Plugin: Syntastic
 " ==========================================================
 
-" Use flake8 syntax checker (instead of default - pylint)
+" For python, use flake8 checker instead of default (pylint)
 let g:syntastic_python_checkers = ['flake8']
 
 set statusline+=%#warningmsg#
@@ -215,7 +223,6 @@ set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
 let g:syntastic_always_populate_loc_list = 1
-" Don't check for line length and 2-indentation
 let g:syntastic_python_flake8_args='--ignore=E501,E111,E114'
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
