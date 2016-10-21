@@ -45,10 +45,6 @@ Plugin 'SirVer/ultisnips'
 " Snippets are separated from the engine. Add this if you want them:
 " Plugin 'honza/vim-snippets'
 
-" Solarized colorscheme
-" http://ethanschoonover.com/solarized
-Plugin 'Solarized'
-
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 
@@ -94,6 +90,29 @@ set colorcolumn=+1
 set ffs=unix,dos,mac          " Try recognizing dos, unix, and mac line endings.
 syntax on                     " Syntax highlighting enabled
 
+" UTF8 handling
+if has("multi_byte")
+  set enc=utf-8
+	set fenc=utf-8
+  set termencoding=utf-8
+  set fileencodings=utf-8,ucs-bom,big5,latin1
+endif
+
+" Honor aliases from .bashrc
+" http://stackoverflow.com/questions/8841116/vim-not-recognizing-aliases-when-in-interactive-mode
+set shell=/bin/bash\ --rcfile\ ~/.bashrc
+
+"command! Q :qall              " Type uppercase Q to quit all files (exit vim)
+
+" Save file
+map <leader>w :w<CR>
+
+" Paste from clipboard
+map <leader>p "+p
+
+" Quit window on <leader>q
+nnoremap <leader>q :q<CR>
+
 
 """" Messages, Info, Status
 set ruler                     " Show the cursor position all the time
@@ -113,7 +132,6 @@ set background=dark
 "colorscheme grb256
 "colorscheme codeschool
 "colorscheme vividchalk
-"colorscheme solarized
 colorscheme torte
 " Better comment color
 " http://unix.stackexchange.com/questions/88879/vim-better-colors-so-comments-arent-dark-blue
@@ -139,23 +157,6 @@ set wildmenu                  " Auto-completion for file names. E.g., :e <Tab>
 set wildmode=full             " <Tab> cycles between all matching choices.
 " Ignore these files when completing
 set wildignore+=*.o,*.obj,.git,*.pyc,*.class,.git,*.js.map
-
-
-"""" Others
-" Honor aliases from .bashrc
-" http://stackoverflow.com/questions/8841116/vim-not-recognizing-aliases-when-in-interactive-mode
-set shell=/bin/bash\ --rcfile\ ~/.bashrc
-
-"command! Q :qall              " Type uppercase Q to quit all files (exit vim)
-
-" Save file
-map <leader>w :w<CR>
-
-" Paste from clipboard
-map <leader>p "+p
-
-" Quit window on <leader>q
-nnoremap <leader>q :q<CR>
 
 
 " ==========================================================
