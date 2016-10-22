@@ -89,6 +89,7 @@ set textwidth=80              " Line width at 80 chars.
 set colorcolumn=+1
 set ffs=unix,dos,mac          " Try recognizing dos, unix, and mac line endings.
 syntax on                     " Syntax highlighting enabled
+set tags=./tags;/             " Recognize ctags files in cwd and in root
 
 " UTF8 handling
 if has("multi_byte")
@@ -187,6 +188,9 @@ au BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\
 " Don't let pyflakes use the quickfix window
 let g:pyflakes_use_quickfix = 0
 
+" JavaScript
+au FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+au FileType html set omnifunc=htmlcomplete#CompleteTags
 
 " ==========================================================
 " Plugin: UltiSnips
@@ -223,11 +227,11 @@ set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
-let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_python_flake8_args='--ignore=E501,E111,E114'
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+" let g:syntastic_always_populate_loc_list = 1
+" let g:syntastic_auto_loc_list = 1
+" let g:syntastic_check_on_open = 1
+" let g:syntastic_check_on_wq = 0
 
 
 " ==========================================================
