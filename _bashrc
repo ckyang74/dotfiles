@@ -79,7 +79,7 @@ alias sb="source $HOME/.bashrc"
 alias ll="ls -l"
 alias lh="ls -lh"
 alias lc="ls --color"
-alias mroe=more
+
 alias autopep8='autopep8 --in-place --ignore-local-config --select=E711,E225,E251,E242,E231,E301,E302,E303,E502,E128'
 
 # Alias definitions. Put all your additions into a separate file
