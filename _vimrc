@@ -146,7 +146,7 @@ set vb t_vb=                " Disable all bells.  I hate ringing/flashing.
 
 """" Indentations
 set autoindent              " Always set autoindenting on
-set tabstop=2               " <tab> inserts 4 spaces 
+set tabstop=2               " <tab> inserts 2 spaces
 set shiftwidth=2            " But an indent level is 2 spaces wide.
 set softtabstop=2           " <BS> over an autoindent deletes both spaces.
 set expandtab               " Use spaces, not tabs, for autoindent/tab key.

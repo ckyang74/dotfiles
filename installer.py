@@ -7,6 +7,7 @@ import sys
 import yaml
 
 _conf_dir = "~/.config"
+# TODO: support local dev_config (maybe dev_config.local.yaml?)
 _conf_file = "dev_config.yaml"
 _backup_extension = "bak"
 
@@ -21,22 +22,24 @@ _head_comment = """## Dev environment configuration.
 # dotfiles:
 # - source_file: _dot_bashrc
 #   destination_file: path/to/link/destination
-#   action_type: link
+#   action_type: symlink
 #
 # others:
 # - source_file: path/to/resource
-#   destination_file: path/to/link/destination
-#   action_type: link
+#   destination_file: path/to/destination
+#   action_type: copy
 
 """
+
 
 def _install_dotfiles(dotfiles):
   for entry in dotfiles:
     src_path = "%s/%s" %(os.getcwd(), entry["source_file"])
     dest_path = "%s/%s" %(_home_dir, entry["destination_file"])
-    _remove_soft_link(dest_path)
+    _remove_dest_soft_link(dest_path)
     _move_orig_as_bak(dest_path)
     _handle_file(src_path, dest_path, entry["action_type"])
+
 
 def _install_others(data):
   if not data["others"]:
@@ -48,10 +51,11 @@ def _install_others(data):
     src_path = "%s/%s" %(_home_dir, entry["source_file"])
     dest_path = "%s/%s" %(_home_dir, entry["destination_file"])
 
-    _remove_soft_link(dest_path)
+    _remove_dest_soft_link(dest_path)
     _move_orig_as_bak(dest_path)
 
     _handle_file(src_path, dest_path, entry["action_type"])
+
 
 def _validate_conf(data):
   if not data:
@@ -85,7 +89,7 @@ def _validate_conf(data):
     assert "source_file" in entry
     assert "destination_file" in entry
     assert "action_type" in entry
-    assert entry["action_type"] in ["link", "copy"]
+    assert entry["action_type"] in ["copy", "symlink"]
 
     dest_path = "%s/%s" %(_home_dir, entry["destination_file"])
     parent_path = os.path.split(dest_path)[0]
@@ -106,10 +110,20 @@ def _validate_conf(data):
       sys.stderr.write("File %s defined but does not exist\n" %f)
     exit(1)
 
-def _remove_soft_link(filepath):
-  if os.path.islink(filepath):
-    os.remove(filepath)
-    sys.stderr.write("Removed existing symlink: %s\n" %filepath)
+
+def _remove_dest_soft_link(filepath):
+  if not os.path.islink(filepath):
+    return
+  os.remove(filepath)
+  sys.stderr.write("Removed existing symlink: %s\n" %filepath)
+
+
+def _remove_dest_file(filepath):
+  if not os.path.isfile(filepath):
+    return
+  os.remove(filepath)
+  sys.stderr.write("Removed existing file: %s\n" %filepath)
+
 
 def _move_orig_as_bak(filepath):
   i = 2
@@ -122,13 +136,16 @@ def _move_orig_as_bak(filepath):
     shutil.move(filepath, backup_filepath)
     sys.stderr.write("Moved %s to %s\n" %(filepath, backup_filepath))
 
+
 def _copy_to_destination(src_path, dest_path):
   shutil.copyfile(src_path, dest_path)
   sys.stderr.write("Copied a file: %s to %s\n" %(src_path, dest_path))
 
+
 def _link_to_destination(src_path, dest_path):
   os.symlink(src_path, dest_path)
   sys.stderr.write("Created a symlink: %s to %s\n" %(src_path, dest_path))
+
 
 def _create_missing_conf_file():
   conf_dirpath = os.path.expanduser(_conf_dir)
@@ -139,13 +156,16 @@ def _create_missing_conf_file():
   src_path = "%s/%s" %(os.getcwd(), _conf_file)
   dest_path = "%s/%s" %(conf_dirpath, _conf_file)
 
-  if not os.path.exists(dest_path):
+  if os.path.exists(dest_path) and not os.path.islink(dest_path):
     _move_orig_as_bak(dest_path)
-    _handle_file(src_path, dest_path, "copy")
+    _link_to_destination(src_path, dest_path)
+  elif not os.path.exists(dest_path):
+    _link_to_destination(src_path, dest_path)
   else:
     sys.stderr.write("Use existing config: %s\n" %dest_path)
 
   return dest_path
+
 
 def _load_config(conf_filepath):
   try:
@@ -158,17 +178,20 @@ def _load_config(conf_filepath):
         %(conf_filepath, e))
     exit(1)
 
+
 def _handle_file(src_path, dest_path, action_type):
-  if action_type == "link":
-    _link_to_destination(src_path, dest_path)
-  elif action_type == "copy":
+  if action_type == "copy":
     _copy_to_destination(src_path, dest_path)
+  elif action_type == "symlink":
+    _link_to_destination(src_path, dest_path)
+
 
 def _show_next_steps(suggestions):
   sys.stderr.write("\n\nNext steps:\n")
   for entry in suggestions:
     dest_path = "%s/%s" %(_home_dir, entry["destination_file"])
     sys.stderr.write("%s\n--%s\n\n" %(dest_path, entry["description"]))
+
 
 if __name__ == "__main__":
   conf_filepath = _create_missing_conf_file()
