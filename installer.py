@@ -7,7 +7,6 @@ import sys
 import yaml
 
 _conf_dir = "~/.config"
-# TODO: support local dev_config (maybe dev_config.local.yaml?)
 _conf_file = "dev_config.yaml"
 _backup_extension = "bak"
 
@@ -17,18 +16,14 @@ _head_comment = """## Dev environment configuration.
 #
 # Example:
 #
-# source_dir: path/to/source_dir
-#
 # dotfiles:
 # - source_file: _dot_bashrc
 #   destination_file: path/to/link/destination
 #   action_type: symlink
 #
-# others:
-# - source_file: path/to/resource
-#   destination_file: path/to/destination
-#   action_type: copy
-
+# suggestions:
+# - destination_file: .vimrc.local
+#   description: Put your machine specific VIM settings here
 """
 
 
@@ -41,22 +36,6 @@ def _install_dotfiles(dotfiles):
     _handle_file(src_path, dest_path, entry["action_type"])
 
 
-def _install_others(data):
-  if not data["others"]:
-    sys.stderr.write("\n\nNo extra config defined. Installation done!\n")
-    _show_next_steps(data["suggestions"])
-    exit(0)
-
-  for entry in data["others"]:
-    src_path = "%s/%s" %(_home_dir, entry["source_file"])
-    dest_path = "%s/%s" %(_home_dir, entry["destination_file"])
-
-    _remove_dest_soft_link(dest_path)
-    _move_orig_as_bak(dest_path)
-
-    _handle_file(src_path, dest_path, entry["action_type"])
-
-
 def _validate_conf(data):
   if not data:
     sys.stderr.write("Config file is empty. conf file: %s\n" %conf_filepath)
@@ -64,7 +43,6 @@ def _validate_conf(data):
 
   assert isinstance(data, dict)
   assert "dotfiles" in data
-  assert "others" in data
   assert "suggestions" in data
 
   existing_dotfiles = set()
@@ -77,14 +55,7 @@ def _validate_conf(data):
     assert "destination_file" in entry
     assert "description" in entry
 
-  others = [] if data["others"] is None else data["others"]
-  for entry in others:
-    src_path = "%s/%s" %(_home_dir, entry["source_file"])
-    if not os.path.exists(src_path):
-      sys.stderr.write("Source file does not exist: %s.\n" %src_path)
-      exit(1)
-
-  for entry in others + data["dotfiles"]:
+  for entry in data["dotfiles"]:
     assert isinstance(entry, dict)
     assert "source_file" in entry
     assert "destination_file" in entry
@@ -147,26 +118,6 @@ def _link_to_destination(src_path, dest_path):
   sys.stderr.write("Created a symlink: %s to %s\n" %(src_path, dest_path))
 
 
-def _create_missing_conf_file():
-  conf_dirpath = os.path.expanduser(_conf_dir)
-  if not os.path.exists(conf_dirpath):
-    os.makedirs(conf_dirpath)
-    sys.stderr.write("Created root config dir: %s\n" %conf_dirpath)
-
-  src_path = "%s/%s" %(os.getcwd(), _conf_file)
-  dest_path = "%s/%s" %(conf_dirpath, _conf_file)
-
-  if os.path.exists(dest_path) and not os.path.islink(dest_path):
-    _move_orig_as_bak(dest_path)
-    _link_to_destination(src_path, dest_path)
-  elif not os.path.exists(dest_path):
-    _link_to_destination(src_path, dest_path)
-  else:
-    sys.stderr.write("Use existing config: %s\n" %dest_path)
-
-  return dest_path
-
-
 def _load_config(conf_filepath):
   try:
     fh = open(conf_filepath, "r")
@@ -194,15 +145,13 @@ def _show_next_steps(suggestions):
 
 
 if __name__ == "__main__":
-  conf_filepath = _create_missing_conf_file()
+  conf_filepath = "%s/%s" %(os.getcwd(), _conf_file)
 
   data = _load_config(conf_filepath)
 
   _validate_conf(data)
 
   _install_dotfiles(data["dotfiles"])
-
-  _install_others(data)
 
   sys.stderr.write("\n\nInstallation done!\n")
   _show_next_steps(data["suggestions"])

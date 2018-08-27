@@ -85,5 +85,3 @@ if [ -f ~/.bash_aliases ]; then
     echo "Loaded $HOME/.bash_aliases"
 fi
 
-
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash

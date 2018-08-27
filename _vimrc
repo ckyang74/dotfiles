@@ -238,7 +238,7 @@ let g:syntastic_python_flake8_args='--ignore=E501,E111,E114'
 " Extra (machine specific) settings
 " ==========================================================
 
-if filereadable(glob("~/.vimrc.local")) 
+if filereadable(glob("~/.vimrc.local"))
   source ~/.vimrc.local
 endif
 

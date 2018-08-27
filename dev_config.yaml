@@ -1,7 +1,7 @@
 ## Basic config for this machine.
 
-# source_file is based on cwd
-# destination_file is based on home dir.
+# source_file is based on cwd (current working directory)
+# destination_file is based on user's home dir.
 dotfiles:
 - source_file: _vimrc
   destination_file: ".vimrc"
@@ -11,19 +11,13 @@ dotfiles:
   destination_file: ".bashrc"
   action_type: symlink
 
-# destination_files are based on home dir.
+# Suggestions for next step. A list of config files are suggested, they are
+# per-machine configs (do not commit them back to the GitHub repo)
+#
+# destination_files are based on user's home dir.
 suggestions:
-- destination_file: .config/dev_config.yaml
-  description: Update your dev environment here
 - destination_file: .vimrc.local
-  description: Put your machine specific vim settings here
+  description: Put your machine specific VIM settings here
 - destination_file: .bash_aliases
-  description: Put your machine specific bash settings here
-
-# Both source_file and destination_file are based on home dir.
-others:
-#- source_file: relative/path/to/source/config
-#  destination_file: relative/path/to/destination/config
-#  action_type: link
-
+  description: Put your machine specific Bash settings here
 
