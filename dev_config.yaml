@@ -1,4 +1,4 @@
-## Basic config for this machine.
+## Basic configs for dotfiles installation.
 
 # source_file is based on cwd (current working directory)
 # destination_file is based on user's home dir.
