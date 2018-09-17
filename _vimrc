@@ -169,6 +169,10 @@ autocmd BufNewFile,BufRead *.jinja2 setlocal ft=html
 
 autocmd BufNewFile,BufRead *.js setlocal ft=javascript
 
+" Recognize .js as javascript file
+" TODO(2018/9/17): is it necessary to associate .js to javascript here?
+autocmd BufNewFile,BufRead *.js setf javascript
+
 autocmd FileType yaml,java,html,xhtml,xml,css,javascript,markdown setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 
 " Recognize .md as markdown file
