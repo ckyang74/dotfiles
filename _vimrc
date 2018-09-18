@@ -337,5 +337,3 @@ if filereadable(glob("~/.vimrc.local"))
   source ~/.vimrc.local
 endif
 
-" for fzf
-set rtp+=/Users/clintyang/homebrew/opt/fzf
