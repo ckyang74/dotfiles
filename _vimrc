@@ -243,8 +243,6 @@ autocmd FileType python setlocal
 autocmd FileType python setlocal
     \ cindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
 
-"autocmd BufRead python compiler nose
-
 autocmd BufRead python
     \ set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 
