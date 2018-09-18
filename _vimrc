@@ -1,3 +1,27 @@
+" ========
+" HTML/CSS
+" ========
+
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+
+" jinja2 as HTML
+autocmd BufNewFile,BufRead *.jinja2 setlocal setfiletype=html
+
+" No tabs, 2 spaces for indentation
+autocmd FileType html,css
+    \ setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+
+" automatically replace tabs with 2 spaces when file is opened
+autocmd FileType html,css :%s/\t/  /ge
+
+" Remove trailing spaces right before save
+autocmd BufWritePre <buffer> autocmd FileType html,css :%s/\s\+$//e
+
+" Show line breaks and tabs as special characters
+autocmd FileType html,css setlocal list
+
+
+
 " ==========================================================
 " Vundle (plugin installer)
 " ==========================================================
@@ -42,6 +66,8 @@ Plugin 'scrooloose/syntastic.git'
 " To provide code snippet templates
 Plugin 'SirVer/ultisnips'
 
+Plugin 'leafgarland/typescript-vim'
+
 " Snippets are separated from the engine. Add this if you want them:
 " Plugin 'honza/vim-snippets'
 
@@ -66,12 +92,14 @@ filetype plugin indent on
 " Others
 " ==========================================================
 
-set nocompatible              " Required VIM default setting
 let mapleader = ","           " Set comma as <leader>
+let maplocalleader = "\\"     " Set \ as <localleader>
+
+syntax on                     " Syntax highlighting enabled
+set nocompatible              " Required VIM default setting
 set nostartofline             " Avoid moving cursor to BOL when jumping around
 set scrolloff=3               " Keep 3 context lines above and below the cursor
 filetype plugin indent on     " File type detection, load custom filetype plugin files
-                              " and indentation based on filetype
 set noautowrite               " Never write a file unless I request it.
 set noautowriteall            " NEVER.
 
@@ -88,13 +116,13 @@ set linebreak                 " Don't wrap textin the middle of a word
 set textwidth=80              " Line width at 80 chars.
 set colorcolumn=+1
 set ffs=unix,dos,mac          " Try recognizing dos, unix, and mac line endings.
-syntax on                     " Syntax highlighting enabled
 set tags=./tags;/             " Recognize ctags files in cwd and in root
+
 
 " UTF8 handling
 if has("multi_byte")
   set enc=utf-8
-	set fenc=utf-8
+  set fenc=utf-8
   set termencoding=utf-8
   set fileencodings=utf-8,ucs-bom,big5,latin1
 endif
@@ -160,37 +188,106 @@ set wildmode=full             " <Tab> cycles between all matching choices.
 set wildignore+=*.o,*.obj,.git,*.pyc,*.class,.git,*.js.map
 
 
-" ==========================================================
-" FileType specific changes
-" ==========================================================
 
-" jinja2 as HTML
-autocmd BufNewFile,BufRead *.jinja2 setlocal ft=html
+" ==========================
+" FileType specific settings
+" ==========================
 
-autocmd BufNewFile,BufRead *.js setlocal ft=javascript
+" TODO(2018/9/18) yaml, yml, json, md, sh, proto, txt
 
-autocmd FileType yaml,java,html,xhtml,xml,css,javascript,markdown setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+" No tabs, 2 spaces for indentation
+" (Note: mkd is for markdown)
+autocmd FileType yaml,xhtml,xml,mkd
+    \ setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
 
-" Recognize .md as markdown file
-au BufNewFile,BufRead *.md setf markdown
+" Remove trailing spaces right before save
+autocmd BufWritePre <buffer> autocmd FileType 
+    \ mkd,text,yaml :%s/\s\+$//e
 
-" Recognize .ts as javascript file
-au BufNewFile,BufRead *.ts setf javascript 
 
-" Remove trailing spaces for specified file types
-autocmd FileType python,markdown,text,yaml,javascript autocmd BufWritePre <buffer> :%s/\s\+$//e
 
+
+" ========
+" Java
+" ========
+
+" No tabs, 2 spaces for indentation
+autocmd FileType java
+    \ setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+
+" Add '// ' before a line with <localleader>c
+autocmd FileType java nnoremap <buffer> <localleader>c I// <esc>
+
+" automatically replace tabs with 2 spaces when file is opened
+autocmd FileType java :%s/\t/  /ge
+
+" Remove trailing spaces right before save
+autocmd BufWritePre <buffer> autocmd FileType java :%s/\s\+$//e
+
+" Show line breaks and tabs as special characters
+autocmd FileType java setlocal list
+
+
+
+
+" ======
 " Python
-"au BufRead *.py compiler nose
-au FileType python set omnifunc=pythoncomplete#Complete
-au FileType python setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2 cindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
-au BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
+" ======
+
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+
+" No tabs, 2 spaces for indentation
+autocmd FileType python setlocal
+    \ expandtab shiftwidth=2 tabstop=2 softtabstop=2
+
+autocmd FileType python setlocal
+    \ cindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
+
+"autocmd BufRead python compiler nose
+
+autocmd BufRead python
+    \ set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
+
+" Add '# ' before a line with <localleader>c
+autocmd FileType python nnoremap <buffer> <localleader>c I# <esc>
+
+" automatically replace tabs with 2 spaces when file is opened
+autocmd FileType python :%s/\t/  /ge
+
+" Remove trailing spaces right before save
+autocmd BufWritePre <buffer> autocmd FileType python :%s/\s\+$//e
+
+" Show line breaks and tabs as special characters
+autocmd FileType python setlocal list
+
 " Don't let pyflakes use the quickfix window
 let g:pyflakes_use_quickfix = 0
 
-" JavaScript
-au FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-au FileType html set omnifunc=htmlcomplete#CompleteTags
+
+
+" =====================
+" javascript/typescript
+" =====================
+
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+
+" No tabs, 2 spaces for indentation
+autocmd FileType javascript,typescript
+    \ setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+
+" Add '// ' before a line with <localleader>c
+autocmd FileType javascript,typescript nnoremap <buffer> <localleader>c I// <esc>
+
+" automatically replace tabs with 2 spaces when file is opened
+autocmd FileType javascript,typescript :%s/\t/  /ge
+
+" Remove trailing spaces right before save
+autocmd BufWritePre <buffer> autocmd FileType javascript,typescript :%s/\s\+$//e
+
+" Show line breaks and tabs as special characters for javascript
+autocmd FileType javascript,typescript setlocal list
+
+
 
 " ==========================================================
 " Plugin: UltiSnips
