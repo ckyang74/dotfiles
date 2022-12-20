@@ -124,7 +124,7 @@ def _load_config(conf_filepath):
     data = yaml.load(fh)
     fh.close()
     return data
-  except yaml.YAMLError, e:
+  except yaml.YAMLError(e):
     sys.stderr.write("Can't read config file %s\nError: %s\n" \
         %(conf_filepath, e))
     exit(1)
