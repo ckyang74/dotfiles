@@ -121,7 +121,7 @@ def _link_to_destination(src_path, dest_path):
 def _load_config(conf_filepath):
   try:
     fh = open(conf_filepath, "r")
-    data = yaml.load(fh)
+    data = yaml.load(fh, Loader=yaml.SafeLoader)
     fh.close()
     return data
   except yaml.YAMLError as e:
